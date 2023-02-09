@@ -4,17 +4,18 @@ import { ref } from "vue";
 //importar useRoute porque aqui no existe... aunq en el template si existe sin importar
 import { useRoute, useRouter } from "vue-router";
 import { useGetData } from '@/composables/getData';
-
+import { useFavoritosStore } from "@/store/favoritos";
 
 const route = useRoute();
 const router = useRouter();
+const { add, findPoke } = useFavoritosStore();
 
 const back = () => {
     //lo podemos utilizar para regresar al usuario a la pagina anterior
     router.push("/pokemons");
 };
 
-const { data, loading, getData,error } = useGetData();
+const { data, loading, getData, error } = useGetData();
 getData(`https://pokeapi.co/api/v2/pokemon/${route.params.name}`)
 
 
@@ -47,9 +48,12 @@ getData(); */
 
     <div v-if="data">
         <img :src="data.sprites?.front_default" alt="" />
-        <h1>Poke: {{ $route.params.name }}</h1>
+        <h1>Poke name: {{ $route.params.name }}</h1>
+        <button :disabled="findPoke(data.name)" class="btn btn-primary mb-2" @click="add(data)">Add Favorito</button>
     </div>
     <h1 v-else>Pokemon no encontrado...</h1>
+
+
     <button @click="back()" class="btn btn-outline-primary">Volver al listado</button>
 
 </template>
